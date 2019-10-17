@@ -1,403 +1,192 @@
-#include <conio.h>
-
-#include <cstdio>
-
-#include <iostream>
-
-#include <string.h>
-
-#include <cstdlib>
-
-using namespace std;
-
-static int p = 0;
-
-class a
-
+#include<iostream>
+#include<fstream>
+#include<cstdlib>
+using std::cout;
+using std::cin;
+using std::endl;
+using std::fstream;
+using std::ofstream;
+using std::ifstream;
+using std::ios;
+class account_query
 {
-
-  char busn[5], driver[10], arrival[5], depart[5], from[10], to[10], seat[8][4][10];
-
+private:
+    char account_number[20];
+    char firstName[10];
+    char lastName[10];
+    float total_Balance;
 public:
-
-  void install();
-
-  void allotment();
-
-  void empty();
-
-  void show();
-
-  void avail();
-
-  void position(int i);
-
-}
-
-bus[10];
-
-void vline(char ch)
-
+    void read_data();
+    void show_data();
+    void write_rec();
+    void read_rec();
+    void search_rec();
+    void edit_rec();
+    void delete_rec();
+};
+void account_query::read_data()
 {
-
-  for (int i=80;i>0;i--)
-
-  cout<<ch;
-
+    cout<<"\nEnter Account Number: ";
+    cin>>account_number;
+    cout<<"Enter First Name: ";
+    cin>>firstName;
+    cout<<"Enter Last Name: ";
+    cin>>lastName;
+    cout<<"Enter Balance: ";
+    cin>>total_Balance;
+    cout<<endl;
 }
-
-void a::install()
-
+void account_query::show_data()
 {
-
-  cout<<"Enter bus no: ";
-
-  cin>>bus[p].busn;
-
-  cout<<"\nEnter Driver's name: ";
-
-  cin>>bus[p].driver;
-
-  cout<<"\nArrival time: ";
-
-  cin>>bus[p].arrival;
-
-  cout<<"\nDeparture: ";
-
-  cin>>bus[p].depart;
-
-  cout<<"\nFrom: \t\t\t";
-
-  cin>>bus[p].from;
-
-  cout<<"\nTo: \t\t\t";
-
-  cin>>bus[p].to;
-
-  bus[p].empty();
-
-  p++;
-
+    cout<<"Account Number: "<<account_number<<endl;
+    cout<<"First Name: "<<firstName<<endl;
+    cout<<"Last Name: "<<lastName<<endl;
+    cout<<"Current Balance: Rs.  "<<total_Balance<<endl;
+    cout<<"-------------------------------"<<endl;
 }
-
-void a::allotment()
-
+void account_query::write_rec()
 {
-
-  int seat;
-
-  char number[5];
-
-  top:
-
-  cout<<"Bus no: ";
-
-  cin>>number;
-
-  int n;
-
-  for(n=0;n<=p;n++)
-
-  {
-
-    if(strcmp(bus[n].busn, number)==0)
-
-    break;
-
-  }
-
-  while(n<=p)
-
-  {
-
-    cout<<"\nSeat Number: ";
-
-    cin>>seat;
-
-    if(seat>32)
-
+    ofstream outfile;
+    outfile.open("record.bank", ios::binary|ios::app);
+    read_data();
+    outfile.write(reinterpret_cast<char *>(this), sizeof(*this));
+    outfile.close();
+}
+void account_query::read_rec()
+{
+    ifstream infile;
+    infile.open("record.bank", ios::binary);
+    if(!infile)
     {
-
-      cout<<"\nThere are only 32 seats available in this bus.";
-
+        cout<<"Error in Opening! File Not Found!!"<<endl;
+        return;
     }
-
-    else
-
+    cout<<"\n****Data from file****"<<endl;
+    while(!infile.eof())
     {
-
-    if (strcmp(bus[n].seat[seat/4][(seat%4)-1], "Empty")==0)
-
-      {
-
-        cout<<"Enter passanger's name: ";
-
-        cin>>bus[n].seat[seat/4][(seat%4)-1];
-
-        break;
-
-      }
-
-    else
-
-      cout<<"The seat no. is already reserved.\n";
-
-      }
-
-      }
-
-    if(n>p)
-
-    {
-
-      cout<<"Enter correct bus no.\n";
-
-      goto top;
-
-    }
-
-  }
-
-
-void a::empty()
-
-{
-
-  for(int i=0; i<8;i++)
-
-  {
-
-    for(int j=0;j<4;j++)
-
-    {
-
-      strcpy(bus[p].seat[i][j], "Empty");
-
-    }
-
-  }
-
-}
-
-void a::show()
-
-{
-
-  int n;
-
-  char number[5];
-
-  cout<<"Enter bus no: ";
-
-  cin>>number;
-
-  for(n=0;n<=p;n++)
-
-  {
-
-    if(strcmp(bus[n].busn, number)==0)
-
-    break;
-
-  }
-
-while(n<=p)
-
-{
-
-  vline('*');
-
-  cout<<"Bus no: \t"<<bus[n].busn
-
-  <<"\nDriver: \t"<<bus[n].driver<<"\t\tArrival time: \t"
-
-  <<bus[n].arrival<<"\tDeparture time:"<<bus[n].depart
-
-  <<"\nFrom: \t\t"<<bus[n].from<<"\t\tTo: \t\t"<<
-
-  bus[n].to<<"\n";
-
-  vline('*');
-
-  bus[0].position(n);
-
-  int a=1;
-
-  for (int i=0; i<8; i++)
-
-  {
-
-    for(int j=0;j<4;j++)
-
-    {
-
-      a++;
-
-      if(strcmp(bus[n].seat[i][j],"Empty")!=0)
-
-      cout<<"\nThe seat no "<<(a-1)<<" is reserved for "<<bus[n].seat[i][j]<<".";
-
-    }
-
-  }
-
-  break;
-
-  }
-
-  if(n>p)
-
-    cout<<"Enter correct bus no: ";
-
-}
-
-void a::position(int l)
-
-{
-
-  int s=0;p=0;
-
-  for (int i =0; i<8;i++)
-
-  {
-
-    cout<<"\n";
-
-    for (int j = 0;j<4; j++)
-
-    {
-
-      s++;
-
-      if(strcmp(bus[l].seat[i][j], "Empty")==0)
-
+        if(infile.read(reinterpret_cast<char*>(this), sizeof(*this))>0)
         {
-
-          cout.width(5);
-
-          cout.fill(' ');
-
-          cout<<s<<".";
-
-          cout.width(10);
-
-          cout.fill(' ');
-
-          cout<<bus[l].seat[i][j];
-
-          p++;
-
+            show_data();
         }
-
-        else
-
-        {
-
-        cout.width(5);
-
-        cout.fill(' ');
-
-        cout<<s<<".";
-
-        cout.width(10);
-
-        cout.fill(' ');
-
-        cout<<bus[l].seat[i][j];
-
-        }
-
-      }
-
     }
-
-  cout<<"\n\nThere are "<<p<<" seats empty in Bus No: "<<bus[l].busn;
-
-  }
-
-void a::avail()
-
-{
-
-
-  for(int n=0;n<p;n++)
-
-  {
-
-    vline('*');
-
-    cout<<"Bus no: \t"<<bus[n].busn<<"\nDriver: \t"<<bus[n].driver
-
-    <<"\t\tArrival time: \t"<<bus[n].arrival<<"\tDeparture Time: \t"
-
-    <<bus[n].depart<<"\nFrom: \t\t"<<bus[n].from<<"\t\tTo: \t\t\t"
-
-    <<bus[n].to<<"\n";
-
-    vline('*');
-
-    vline('_');
-
-  }
-
+    infile.close();
 }
-
+void account_query::search_rec()
+{
+    int n;
+    ifstream infile;
+    infile.open("record.bank", ios::binary);
+    if(!infile)
+    {
+        cout<<"\nError in opening! File Not Found!!"<<endl;
+        return;
+    }
+    infile.seekg(0,ios::end);
+    int count = infile.tellg()/sizeof(*this);
+    cout<<"\n There are "<<count<<" record in the file";
+    cout<<"\n Enter Record Number to Search: ";
+    cin>>n;
+    infile.seekg((n-1)*sizeof(*this));
+    infile.read(reinterpret_cast<char*>(this), sizeof(*this));
+    show_data();
+}
+void account_query::edit_rec()
+{
+    int n;
+    fstream iofile;
+    iofile.open("record.bank", ios::in|ios::binary);
+    if(!iofile)
+    {
+        cout<<"\nError in opening! File Not Found!!"<<endl;
+        return;
+    }
+    iofile.seekg(0, ios::end);
+    int count = iofile.tellg()/sizeof(*this);
+    cout<<"\n There are "<<count<<" record in the file";
+    cout<<"\n Enter Record Number to edit: ";
+    cin>>n;
+    iofile.seekg((n-1)*sizeof(*this));
+    iofile.read(reinterpret_cast<char*>(this), sizeof(*this));
+    cout<<"Record "<<n<<" has following data"<<endl;
+    show_data();
+    iofile.close();
+    iofile.open("record.bank", ios::out|ios::in|ios::binary);
+    iofile.seekp((n-1)*sizeof(*this));
+    cout<<"\nEnter data to Modify "<<endl;
+    read_data();
+    iofile.write(reinterpret_cast<char*>(this), sizeof(*this));
+}
+void account_query::delete_rec()
+{
+    int n;
+    ifstream infile;
+    infile.open("record.bank", ios::binary);
+    if(!infile)
+    {
+        cout<<"\nError in opening! File Not Found!!"<<endl;
+        return;
+    }
+    infile.seekg(0,ios::end);
+    int count = infile.tellg()/sizeof(*this);
+    cout<<"\n There are "<<count<<" record in the file";
+    cout<<"\n Enter Record Number to Delete: ";
+    cin>>n;
+    fstream tmpfile;
+    tmpfile.open("tmpfile.bank", ios::out|ios::binary);
+    infile.seekg(0);
+    for(int i=0; i<count; i++)
+    {
+        infile.read(reinterpret_cast<char*>(this),sizeof(*this));
+        if(i==(n-1))
+            continue;
+        tmpfile.write(reinterpret_cast<char*>(this), sizeof(*this));
+    }
+    infile.close();
+    tmpfile.close();
+    remove("record.bank");
+    rename("tmpfile.bank", "record.bank");
+}
 int main()
-
 {
-
-system("cls");
-
-int w;
-
-while(1)
-
-{
-
-    //system("cls");
-
-  cout<<"\n\n\n\n\n";
-
-  cout<<"\t\t\t1.Install\n\t\t\t"
-
-  <<"2.Reservation\n\t\t\t"
-
-  <<"3.Show\n\t\t\t"
-
-  <<"4.Buses Available. \n\t\t\t"
-
-  <<"5.Exit";
-
-  cout<<"\n\t\t\tEnter your choice:-> ";
-
-  cin>>w;
-
-  switch(w)
-
-  {
-
-    case 1:  bus[p].install();
-
-      break;
-
-    case 2:  bus[p].allotment();
-
-      break;
-
-    case 3:  bus[0].show();
-
-      break;
-
-    case 4:  bus[0].avail();
-
-      break;
-
-    case 5:  exit(0);
-
-  }
-
-}
-
-return 0;
-
+    account_query A;
+    int choice;
+    cout<<"***Account Information System***"<<endl;
+    while(true)
+    {
+        cout<<"Select one option below ";
+        cout<<"\n\t1-->Add record to file";
+        cout<<"\n\t2-->Show record from file";
+        cout<<"\n\t3-->Search Record from file";
+        cout<<"\n\t4-->Update Record";
+        cout<<"\n\t5-->Delete Record";
+        cout<<"\n\t6-->Quit";
+        cout<<"\nEnter your choice: ";
+        cin>>choice;
+        switch(choice)
+        {
+        case 1:
+            A.write_rec();
+            break;
+        case 2:
+            A.read_rec();
+            break;
+        case 3:
+            A.search_rec();
+            break;
+        case 4:
+            A.edit_rec();
+            break;
+        case 5:
+            A.delete_rec();
+            break;
+        case 6:
+            exit(0);
+            break;
+        default:
+            cout<<"\nEnter correct choice";
+            exit(0);
+        }
+    }
+    system("pause");
+    return 0;
 }
